@@ -1,4 +1,4 @@
-import std.stdio : writeln;
+import std.stdio : writeln, stderr;
 import std.conv : to;
 import std.range : retro;
 
@@ -14,6 +14,7 @@ void main() {
     writeln("P3\n", imageWidth, " ", imageHeight, "\n255");
 
     foreach_reverse (j; 0 .. imageHeight) {
+        stderr.writeln("Scanlines remaining: ", j);
         foreach (i; 0 .. imageWidth) {
             auto r = double(i) / (imageWidth - 1);
             auto g = double(j) / (imageHeight - 1);
@@ -26,4 +27,7 @@ void main() {
             writeln(ir, " ", ig, " ", ib);
         }
     }
+
+    stderr.writeln("\nDone");
+
 }
