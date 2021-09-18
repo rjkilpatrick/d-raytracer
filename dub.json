@@ -3,6 +3,9 @@
 		"John Kilpatrick"
 	],
 	"copyright": "Copyright © 2021, John Kilpatrick",
+	"dependencies": {
+		"mir-algorithm": "~>3.10.87"
+	},
 	"description": "A simple Ray Tracer",
 	"license": "MIT",
 	"name": "raytracer"
