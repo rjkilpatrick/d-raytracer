@@ -2,6 +2,8 @@ import std.stdio : writeln, stderr;
 import std.conv : to;
 import std.range : retro;
 
+import raytracer.color;
+
 void main() {
 
     // Image Dimensions
@@ -16,15 +18,8 @@ void main() {
     foreach_reverse (j; 0 .. imageHeight) {
         stderr.writeln("Scanlines remaining: ", j);
         foreach (i; 0 .. imageWidth) {
-            auto r = double(i) / (imageWidth - 1);
-            auto g = double(j) / (imageHeight - 1);
-            auto b = 0.25;
-
-            int ir = (255.999 * r).to!int;
-            int ig = (255.999 * g).to!int;
-            int ib = (255.999 * b).to!int;
-
-            writeln(ir, " ", ig, " ", ib);
+            Color pixel_color = new Color(double(i) / (imageWidth - 1), double(j) / (imageHeight - 1), 0.25);
+            writeln(pixel_color);
         }
     }
 
