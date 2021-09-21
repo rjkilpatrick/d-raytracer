@@ -11,16 +11,16 @@ double hitSphere(const Point3 center, double radius, const Ray ray) {
     Vec3 oc = (ray.origin - center).dup.to!Vec3;
 
     // Uses discriminant from quadratic equation solved
-    const a = ray.direction.dot(ray.direction);
-    const b = 2.0 * oc.dot(ray.direction);
-    const c = oc.dot(oc) - radius ^^ 2;
+    const a = ray.direction.lengthSquared;
+    const halfB = oc.dot(ray.direction);
+    const c = oc.lengthSquared - radius ^^ 2;
 
-    auto discriminant = b ^^ 2 - 4 * a * c;
-    if (discriminant < 0) {
+    auto discriminantOverFour = halfB ^^ 2 - a * c;
+    if (discriminantOverFour < 0) {
         return -1;
     } else {
         import std.math : sqrt;
-        return (-b - sqrt(discriminant)) / (2.0 * a);
+        return (-halfB - sqrt(discriminantOverFour)) / a;
     }
 }
 
