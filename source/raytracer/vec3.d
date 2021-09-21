@@ -124,6 +124,11 @@ public:
         return new Vec3(this.x, this.y, this.z);
     }
 
+    /// Duplicate copy of class instance with same properties
+    auto idup() const {
+        return new const Vec3(this.x, this.y, this.z);
+    }
+
     /// $
     @property int opDollar(size_t dim : 0)() const {
         return e.length;

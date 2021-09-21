@@ -6,8 +6,23 @@ import raytracer.color;
 import raytracer.ray;
 import raytracer.vec3;
 
+/// 
+bool hitSphere(const Point3 center, double radius, const Ray ray) {
+    Vec3 oc = (ray.origin - center).dup.to!Vec3;
+
+    // Uses discriminant from quadratic equation solved
+    const a = ray.direction.dot(ray.direction);
+    const b = 2.0 * oc.dot(ray.direction);
+    const c = oc.dot(oc) - radius ^^ 2;
+
+    auto discriminant = b ^^ 2 - 4 * a * c;
+    return (discriminant > 0);
+}
+
 /// Determines the ray color by its intersections with the scene
 Color rayColor(Ray ray) {
+    if (hitSphere(new Point3(0, 0, -1), 0.5, ray))
+        return new Color(1, 0, 0);
     auto t = 0.5 * (ray.direction.unitVector.y + 1.0);
     return (1. - t) * new Color(1.0) + t * new Color(0.5, 0.7, 1.0);
 }
