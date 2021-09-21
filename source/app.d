@@ -7,7 +7,7 @@ import raytracer.ray;
 import raytracer.vec3;
 
 /// 
-bool hitSphere(const Point3 center, double radius, const Ray ray) {
+double hitSphere(const Point3 center, double radius, const Ray ray) {
     Vec3 oc = (ray.origin - center).dup.to!Vec3;
 
     // Uses discriminant from quadratic equation solved
@@ -16,14 +16,24 @@ bool hitSphere(const Point3 center, double radius, const Ray ray) {
     const c = oc.dot(oc) - radius ^^ 2;
 
     auto discriminant = b ^^ 2 - 4 * a * c;
-    return (discriminant > 0);
+    if (discriminant < 0) {
+        return -1;
+    } else {
+        import std.math : sqrt;
+        return (-b - sqrt(discriminant)) / (2.0 * a);
+    }
 }
 
 /// Determines the ray color by its intersections with the scene
 Color rayColor(Ray ray) {
-    if (hitSphere(new Point3(0, 0, -1), 0.5, ray))
-        return new Color(1, 0, 0);
-    auto t = 0.5 * (ray.direction.unitVector.y + 1.0);
+    auto t = hitSphere(new Point3(0, 0, -1), 0.5, ray);
+
+    if (t > 0) {
+        Vec3 normal = (ray.at(t) - new Vec3(0, 0, -1)).unitVector;
+        return 0.5 * new Color(normal.x + 1, normal.y + 1, normal.z + 1);
+    }
+    
+    t = 0.5 * (ray.direction.unitVector.y + 1.0);
     return (1. - t) * new Color(1.0) + t * new Color(0.5, 0.7, 1.0);
 }
 
