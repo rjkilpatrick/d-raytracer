@@ -11,6 +11,11 @@ class Color : Vec3 {
         super();
     }
 
+    /// Returns Gray-scale Color
+    this(double gray) pure {
+        super(gray);
+    }
+
     /// Returns Color filled with r, g, b
     this(double r, double g, double b) pure {
         super(r, g, b);

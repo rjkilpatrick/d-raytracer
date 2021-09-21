@@ -44,7 +44,7 @@ public:
     }
 
     /// Negate Vec3
-    Vec3 opUnary(string op)() if (op == "-") {
+    auto opUnary(string op)() if (op == "-") {
         return new Vec3(-this.x, -this.y, -this.z);
     }
 
@@ -62,18 +62,28 @@ public:
 
         return isClose(this.x, rhs.x) && isClose(this.y, rhs.y) && isClose(this.z, rhs.z);
     }
+    // bool opEquals()(auto ref const Vec3 rhs) const {
+    //     import std.math.operations : isClose;
 
-    /// Binary scalar ops. [+, -, *, /]
-    auto opBinary(string op)(double rhs) const 
+    //     return isClose(this.x, rhs.x) && isClose(this.y, rhs.y) && isClose(this.z, rhs.z);
+    // }
+
+    /// Left binary scalar ops. [+, -, *, /]
+    auto opBinary(string op, this T)(double rhs) const 
             if ((op == "+") || (op == "-") || (op == "*") || (op == "/")) {
-        return mixin("new Vec3(this.x " ~ op ~ " rhs, this.y " ~ op ~ " rhs, this.z " ~ op ~ " rhs)");
+        return mixin("new T(this.x " ~ op ~ " rhs, this.y " ~ op ~ " rhs, this.z " ~ op ~ " rhs)");
+    }
+
+    /// Right binary scalar ops. [+, -, *, /]
+    auto opBinaryRight(string op, this T)(double lhs) const 
+            if ((op == "+") || (op == "-") || (op == "*") || (op == "/")) {
+        return mixin("new T(lhs " ~ op ~ " this.x, lhs " ~ op ~ " this.y, lhs " ~ op ~ " this.z)");
     }
 
     /// Binary Vec3 ops
-    auto opBinary(string op)(Vec3 rhs) const if ((op == "+") || (op == "-")) {
-        return mixin(
-                "new Vec3(this.x " ~ op ~ " rhs.x, this.y " ~ op ~ " rhs.y, this.z " ~ op
-                ~ " rhs.z)");
+    auto opBinary(string op, this T)(T rhs) const if ((op == "+") || (op == "-")) {
+        return mixin("new T(this.x " ~ op ~ " rhs.x, this.y " ~ op
+                ~ " rhs.y, this.z " ~ op ~ " rhs.z)");
     }
 
     /// Returns the euclidean length
@@ -109,10 +119,10 @@ public:
         }
     }
 
-    // /// Duplicate copy of class instance with same properties
-    // auto dup() const {
-    //     return new Vec3(this.x, this.y, this.z);
-    // }
+    /// Duplicate copy of class instance with same properties
+    auto dup() const {
+        return new Vec3(this.x, this.y, this.z);
+    }
 
     /// $
     @property int opDollar(size_t dim : 0)() const {
@@ -154,10 +164,10 @@ unittest {
 
     // Scalar Addition, Subtraction, Multiplication, Division
     // TODO: Convert to slicing only
-    assert((new Vec3(2)) + 2 == new Vec3(4));
-    assert((new Vec3(4)) - 2 == new Vec3(2));
-    assert((new Vec3(2)) * 2 == new Vec3(4));
-    assert((new Vec3(4)) / 2 == new Vec3(2));
+    assert((new Vec3(2)) + double(2) == new Vec3(4));
+    assert((new Vec3(4)) - double(2) == new Vec3(2));
+    assert((new Vec3(2)) * double(2) == new Vec3(4));
+    assert((new Vec3(4)) / double(2) == new Vec3(2));
 
     // Vector Addition, Subtraction
     assert((new Vec3(2) + new Vec3(2)) == new Vec3(4));
