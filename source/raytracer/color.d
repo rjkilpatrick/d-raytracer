@@ -21,6 +21,26 @@ class Color : Vec3 {
         super(r, g, b);
     }
 
+    // dfmt off 
+    /// Gets red component of the color
+    pragma(inline): @property r() const { return e[0]; }
+
+    /// Gets blue component of the color
+    pragma(inline): @property g() const { return e[1]; }
+
+    /// Gets green component of the color
+    pragma(inline): @property b() const { return e[2]; }
+
+    /// Sets red component of the color
+    pragma(inline): @property void r(const double r) { e[0] = r; }
+
+    /// Sets green component of the color
+    pragma(inline): @property void g(const double g) { e[1] = g; }
+
+    /// Sets blue component of the color
+    pragma(inline): @property void b(const double b) { e[2] = b; }
+    // dfmt on 
+    
     import std.format : FormatSpec, FormatException;
 
     override void toString(scope void delegate(const(char)[]) sink, FormatSpec!char fmt) const {
@@ -29,13 +49,13 @@ class Color : Vec3 {
         case 's':
             import std.conv : to;
 
-            sink((255.999 * this.x).to!int
+            sink((255.999 * this.r).to!int
                     .to!string);
             sink(" ");
-            sink((255.999 * this.y).to!int
+            sink((255.999 * this.g).to!int
                     .to!string);
             sink(" ");
-            sink((255.999 * this.z).to!int
+            sink((255.999 * this.b).to!int
                     .to!string);
             break;
         default:
