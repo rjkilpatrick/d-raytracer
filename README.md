@@ -8,7 +8,7 @@ The eventual aim is that the books themselves are ported to tutorials in D.
 
 ## Output an image
 
-We output our image to stdout as a [PPM image](https://en.wikipedia.org/wiki/Netpbm#PPM_example) to avoid any file manipulations or useage of an external library.
+We output our image to stdout as a [PPM image](https://en.wikipedia.org/wiki/Netpbm#PPM_example) to avoid any file manipulations or usage of an external library.
 
 ```sh
 dub run -q > ./image.ppm
