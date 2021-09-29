@@ -1,5 +1,7 @@
 # Ray Tracing in One Weekend
 
+![ray traced image](image.png)
+
 This project borrows from the excellent [Ray Tracing in One weekend book series](https://raytracing.github.io/).
 
 The eventual aim is that the books themselves are ported to tutorials in D.
