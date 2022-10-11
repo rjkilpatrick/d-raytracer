@@ -2,12 +2,7 @@ import std.stdio : writeln, stderr;
 import std.conv : to;
 import std.range : retro;
 
-import raytracer.color;
-import raytracer.ray;
-import raytracer.vec3;
-import raytracer.sphere;
-import raytracer.hittable;
-import raytracer.hittable_list;
+import raytracer;
 
 /// Determines the ray color by its intersections with the scene
 Color rayColor(Ray ray, HittableList world) {
