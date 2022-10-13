@@ -8,25 +8,41 @@ module raytracer.vec3;
 +/
 class Vec3 {
 public:
-    // dfmt off 
     /// Gets x component of the vector
-    pragma(inline): @property x() const { return e[0]; } // TODO: Remove pure
+pragma(inline):
+    @property x() const {
+        return e[0];
+    }
 
     /// Gets y component of the vector
-    pragma(inline): @property y() const { return e[1]; } // TODO: Remove pure
+pragma(inline):
+    @property y() const {
+        return e[1];
+    }
 
     /// Gets z component of the vector
-    pragma(inline): @property z() const { return e[2]; } // TODO: Remove pure
+pragma(inline):
+    @property z() const {
+        return e[2];
+    }
 
     /// Sets x component of the vector
-    pragma(inline): @property void x(const double x) { e[0] = x; }
+pragma(inline):
+    @property void x(const double x) {
+        e[0] = x;
+    }
 
     /// Sets y component of the vector
-    pragma(inline): @property void y(const double y) { e[1] = y; }
+pragma(inline):
+    @property void y(const double y) {
+        e[1] = y;
+    }
 
     /// Sets z component of the vector
-    pragma(inline): @property void z(const double z) { e[2] = z; }
-    // dfmt on 
+pragma(inline):
+    @property void z(const double z) {
+        e[2] = z;
+    }
 
     /// Returns Vec3 populated as all zeros
     this() pure {
@@ -44,7 +60,7 @@ public:
     }
 
     /// Negate Vec3
-    auto opUnary(string op)() if (op == "-") {
+    auto opUnary(string op)() const if (op == "-") {
         return new Vec3(-this.x, -this.y, -this.z);
     }
 
@@ -62,16 +78,17 @@ public:
 
         return isClose(this.x, rhs.x) && isClose(this.y, rhs.y) && isClose(this.z, rhs.z);
     }
-    // bool opEquals()(auto ref const Vec3 rhs) const {
-    //     import std.math.operations : isClose;
-
-    //     return isClose(this.x, rhs.x) && isClose(this.y, rhs.y) && isClose(this.z, rhs.z);
-    // }
 
     /// Left binary scalar ops. [+, -, *, /]
     auto opBinary(string op, this T)(double rhs) const
     if ((op == "+") || (op == "-") || (op == "*") || (op == "/")) {
         return mixin("new T(this.x " ~ op ~ " rhs, this.y " ~ op ~ " rhs, this.z " ~ op ~ " rhs)");
+    }
+
+    /// Left binary scalar ops. [+, -, *, /]
+    auto opBinary(string op, this T)(T rhs) const
+    if ((op == "+") || (op == "-") || (op == "*") || (op == "/")) {
+        return mixin("new T(this.x " ~ op ~ " rhs.x, this.y " ~ op ~ " rhs.y, this.z " ~ op ~ " rhs.z)");
     }
 
     /// Right binary scalar ops. [+, -, *, /]
@@ -80,26 +97,26 @@ public:
         return mixin("new T(lhs " ~ op ~ " this.x, lhs " ~ op ~ " this.y, lhs " ~ op ~ " this.z)");
     }
 
-    /// Binary Vec3 ops
-    auto opBinary(string op, this T)(T rhs) const if ((op == "+") || (op == "-")) {
-        return mixin("new T(this.x " ~ op ~ " rhs.x, this.y " ~ op
-                ~ " rhs.y, this.z " ~ op ~ " rhs.z)");
+    /// Right binary scalar ops. [+, -, *, /]
+    auto opBinaryRight(string op, this T)(T lhs) const
+    if ((op == "+") || (op == "-") || (op == "*") || (op == "/")) {
+        return mixin("new T(lhs.x " ~ op ~ " this.x, lhs.y " ~ op ~ " this.y, lhs.z " ~ op ~ " this.z)");
     }
 
-    void opIndexOpAssign(string op, this T)(T lhs, double rhs) {
-        if ((op == "+") || (op == "-") || (op == "*") || (op == "/")) {
-            mixin("lhs.x " ~ op ~ "= rhs");
-            mixin("lhs.y " ~ op ~ "= rhs");
-            mixin("lhs.z " ~ op ~ "= rhs");
-        }
+    Vec3 opOpAssign(string op)(Vec3 rhs)
+            if ((op == "+") || (op == "-") || (op == "*") || (op == "/")) {
+        mixin("this.e[0] " ~ op ~ "= rhs.x;");
+        mixin("this.e[1] " ~ op ~ "= rhs.y;");
+        mixin("this.e[2] " ~ op ~ "= rhs.z;");
+        return this;
     }
 
-    void opOpAssign(string op, this T)(T lhs, Vec3 rhs) {
-        if ((op == "+") || (op == "-") || (op == "*") || (op == "/")) {
-            mixin("lhs.x " ~ op ~ "= rhs.x");
-            mixin("lhs.y " ~ op ~ "= rhs.y");
-            mixin("lhs.z " ~ op ~ "= rhs.z");
-        }
+    Vec3 opOpAssign(string op)(double rhs)
+            if ((op == "+") || (op == "-") || (op == "*") || (op == "/")) {
+        mixin("this.e[0] " ~ op ~ "= rhs;");
+        mixin("this.e[1] " ~ op ~ "= rhs;");
+        mixin("this.e[2] " ~ op ~ "= rhs;");
+        return this;
     }
 
 pragma(inline):
@@ -114,6 +131,14 @@ pragma(inline):
         import std.random : uniform;
 
         return new Vec3(uniform(min, max), uniform(min, max), uniform(min, max));
+    }
+
+    bool nearZero() const {
+        import std.math : fabs;
+
+        const double epsilon = 1.0e-8;
+
+        return (fabs(this.x) < epsilon) && (fabs(this.y) < epsilon) && (fabs(this.z) < epsilon);
     }
 
     /// Returns the euclidean length
@@ -214,6 +239,33 @@ unittest {
     assert(x == new Vec3(1));
 }
 
+///
+unittest {
+    auto x = new Vec3(1.0);
+    assert(-x == new Vec3(-1.0));
+}
+
+///
+unittest {
+    auto x = new Vec3(1);
+    x += new Vec3(1);
+    assert(x == new Vec3(2));
+}
+
+///
+unittest {
+    auto x = new Vec3(0);
+    x[] = 1;
+    assert(x == new Vec3(1));
+}
+
+///
+unittest {
+    auto x = new Vec3(1.0, 0.0, 0.5);
+    auto y = new Vec3(9.0, 1.0, 2.0);
+    assert(x * y == new Vec3(9.0, 0.0, 1.0));
+}
+
 /// Dot product
 double dot(const Vec3 u, const Vec3 v) {
     return (u.x * v.x) + (u.y * v.y) + (u.z * v.z);
@@ -244,6 +296,11 @@ unittest {
     assert(x.cross(y) == z);
     assert(y.cross(z) == x);
     assert(z.cross(x) == y);
+
+    // Anti-cyclic permutations
+    assert(y.cross(x) == -z);
+    assert(z.cross(y) == -x);
+    assert(x.cross(z) == -y);
 }
 
 /// Duplicate a vector
@@ -277,6 +334,40 @@ unittest {
     assert(ones.length == sqrt(double(3)));
 
     assert(ones.unitVector.length == 1);
+}
+
+/// Random in unit sphere
+Vec3 random_in_unit_sphere() {
+    while (true) {
+        auto p = Vec3.random(-1, 1);
+        if (p.lengthSquared >= 1) {
+            continue;
+        }
+        return p;
+    }
+}
+
+///
+unittest {
+    assert(random_in_unit_sphere.lengthSquared <= 1.0);
+}
+
+/// Gets a random unit vector
+Vec3 random_unit_vector() {
+    return random_in_unit_sphere.unitVector;
+}
+
+Vec3 random_in_hemisphere(const Vec3 normal) {
+    Vec3 in_unit_sphere = random_in_unit_sphere();
+    if (in_unit_sphere.dot(normal) > 0.0)
+        return in_unit_sphere;
+    else
+        return -in_unit_sphere;
+}
+
+/// Reflects a vector about a normal
+Vec3 reflect(Vec3 v, Vec3 normal) {
+    return v - 2 * v.dot(normal) * normal;
 }
 
 /++

@@ -13,8 +13,11 @@ Color rayColor(Ray ray, HittableList world, int bouncesRemaining) {
 
     HitRecord hitRecord;
     if (world.hit(ray, 1.0e-3, double.infinity, hitRecord)) {
-        Point3 target = hitRecord.point + random_in_hemisphere(hitRecord.normal);
-        return 0.5 * rayColor(new Ray(hitRecord.point, target - hitRecord.point), world, bouncesRemaining - 1);
+        Ray scattered;
+        Color attenuation;
+        if (hitRecord.material.scatter(ray, hitRecord, attenuation, scattered))
+            return attenuation * rayColor(scattered, world, bouncesRemaining - 1);
+        return Color.black;
     }
 
     Vec3 unitDirection = ray.direction.unitVector;
@@ -31,10 +34,18 @@ void main() {
     const samples_per_pixel = 100;
     const max_bounces = 50;
 
+    // Materials
+    auto materialGround = new Lambertian(new Color(0.8, 0.8, 0.0));
+    auto materialCentre = new Lambertian(new Color(0.7, 0.3, 0.3));
+    auto materialLeft = new Metal(new Color(0.8, 0.8, 0.8));
+    auto materialRight = new Metal(new Color(0.8, 0.6, 0.2));
+
     // World
     HittableList world = new HittableList();
-    world ~= new Sphere(new Point3(0., 0., -1.), 0.5);
-    world ~= new Sphere(new Point3(0., -100.5, -1.), 100.);
+    world ~= new Sphere(new Point3(0.0, -100.5, -1.0), 100.0, materialGround);
+    world ~= new Sphere(new Point3(0.0, 0.0, -1.0), 0.5, materialCentre);
+    world ~= new Sphere(new Point3(-1.0, 0.0, -1.0), 0.5, materialLeft);
+    world ~= new Sphere(new Point3(1.0, 0.0, -1.0), 0.5, materialRight);
 
     // Camera
     Camera camera = new Camera();

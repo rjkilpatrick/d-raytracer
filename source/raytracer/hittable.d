@@ -6,6 +6,7 @@ import raytracer;
 struct HitRecord {
     Point3 point;
     Vec3 normal;
+    Material material;
     double t;
     bool isFrontFace;
 

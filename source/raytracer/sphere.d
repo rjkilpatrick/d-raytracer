@@ -1,26 +1,22 @@
 module raytracer.sphere;
 
-import raytracer.ray;
-import raytracer.vec3;
+import raytracer;
 
-import raytracer.hittable;
-
-/++
-
-+/
+/// Basic sphere hittable object
 class Sphere : Hittable {
     this() {
     }
 
-    this(Point3 centre, double radius) {
+    this(Point3 centre, double radius, Material material) {
         _center = centre;
         _radius = radius;
+        _material = material;
     }
 
     ///
     override bool hit(const Ray ray, double tMin, double tMax, ref HitRecord hitRecord) const {
         import std.conv : to;
-        Vec3 oc = (ray.origin - _center).dup.to!Vec3;
+        Vec3 oc = (ray.origin.dup - _center).dup.to!Vec3;
 
         // Uses discriminant from quadratic equation solved
         const a = ray.direction.lengthSquared;
@@ -48,6 +44,7 @@ class Sphere : Hittable {
         hitRecord.point = ray.at(hitRecord.t);
         Vec3 outwardNormal = (hitRecord.point - _center).dup.to!Vec3 / _radius;
         hitRecord.setFaceNormal(ray, outwardNormal);
+        hitRecord.material = _material.dup;
 
         return true;
     }
@@ -55,4 +52,5 @@ class Sphere : Hittable {
 private:
     Point3 _center;
     double _radius;
+    Material _material;
 }
