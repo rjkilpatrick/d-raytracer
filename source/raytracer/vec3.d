@@ -69,14 +69,14 @@ public:
     // }
 
     /// Left binary scalar ops. [+, -, *, /]
-    auto opBinary(string op, this T)(double rhs) const 
-            if ((op == "+") || (op == "-") || (op == "*") || (op == "/")) {
+    auto opBinary(string op, this T)(double rhs) const
+    if ((op == "+") || (op == "-") || (op == "*") || (op == "/")) {
         return mixin("new T(this.x " ~ op ~ " rhs, this.y " ~ op ~ " rhs, this.z " ~ op ~ " rhs)");
     }
 
     /// Right binary scalar ops. [+, -, *, /]
-    auto opBinaryRight(string op, this T)(double lhs) const 
-            if ((op == "+") || (op == "-") || (op == "*") || (op == "/")) {
+    auto opBinaryRight(string op, this T)(double lhs) const
+    if ((op == "+") || (op == "-") || (op == "*") || (op == "/")) {
         return mixin("new T(lhs " ~ op ~ " this.x, lhs " ~ op ~ " this.y, lhs " ~ op ~ " this.z)");
     }
 
@@ -84,6 +84,36 @@ public:
     auto opBinary(string op, this T)(T rhs) const if ((op == "+") || (op == "-")) {
         return mixin("new T(this.x " ~ op ~ " rhs.x, this.y " ~ op
                 ~ " rhs.y, this.z " ~ op ~ " rhs.z)");
+    }
+
+    void opIndexOpAssign(string op, this T)(T lhs, double rhs) {
+        if ((op == "+") || (op == "-") || (op == "*") || (op == "/")) {
+            mixin("lhs.x " ~ op ~ "= rhs");
+            mixin("lhs.y " ~ op ~ "= rhs");
+            mixin("lhs.z " ~ op ~ "= rhs");
+        }
+    }
+
+    void opOpAssign(string op, this T)(T lhs, Vec3 rhs) {
+        if ((op == "+") || (op == "-") || (op == "*") || (op == "/")) {
+            mixin("lhs.x " ~ op ~ "= rhs.x");
+            mixin("lhs.y " ~ op ~ "= rhs.y");
+            mixin("lhs.z " ~ op ~ "= rhs.z");
+        }
+    }
+
+pragma(inline):
+    static Vec3 random() {
+        import std.random : uniform01;
+
+        return new Vec3(uniform01(), uniform01(), uniform01());
+    }
+
+pragma(inline):
+    static Vec3 random(double min, double max) {
+        import std.random : uniform;
+
+        return new Vec3(uniform(min, max), uniform(min, max), uniform(min, max));
     }
 
     /// Returns the euclidean length
@@ -202,6 +232,18 @@ auto cross(const Vec3 u, const Vec3 v) {
                 (u.z * v.x) - (u.x * v.z),
                 (u.x * v.y) - (u.y * v.x));
     // dfmt on
+}
+
+///
+unittest {
+    const x = new Vec3(1, 0, 0);
+    const y = new Vec3(0, 1, 0);
+    const z = new Vec3(0, 0, 1);
+
+    // Cyclic permutations
+    assert(x.cross(y) == z);
+    assert(y.cross(z) == x);
+    assert(z.cross(x) == y);
 }
 
 /// Duplicate a vector

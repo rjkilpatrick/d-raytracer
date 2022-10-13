@@ -2,7 +2,6 @@ module raytracer.color;
 
 import raytracer.vec3;
 
-
 /// 3-vector of RGB color
 class Color : Vec3 {
 
@@ -21,45 +20,38 @@ class Color : Vec3 {
         super(r, g, b);
     }
 
-    // dfmt off 
-    /// Gets red component of the color
-    pragma(inline): @property r() const { return e[0]; }
-
-    /// Gets blue component of the color
-    pragma(inline): @property g() const { return e[1]; }
-
-    /// Gets green component of the color
-    pragma(inline): @property b() const { return e[2]; }
-
-    /// Sets red component of the color
-    pragma(inline): @property void r(const double r) { e[0] = r; }
-
-    /// Sets green component of the color
-    pragma(inline): @property void g(const double g) { e[1] = g; }
-
-    /// Sets blue component of the color
-    pragma(inline): @property void b(const double b) { e[2] = b; }
-    // dfmt on 
-    
     import std.format : FormatSpec, FormatException;
 
     override void toString(scope void delegate(const(char)[]) sink, FormatSpec!char fmt) const {
-
         switch (fmt.spec) {
         case 's':
             import std.conv : to;
+            import std.math : sqrt;
 
-            sink((255.999 * this.r).to!int
+            // Gamm correct for gamma = 2.0
+            auto r = sqrt(this.x);
+            auto g = sqrt(this.y);
+            auto b = sqrt(this.z);
+
+            sink((255.999 * r).to!int
                     .to!string);
             sink(" ");
-            sink((255.999 * this.g).to!int
+            sink((255.999 * g).to!int
                     .to!string);
             sink(" ");
-            sink((255.999 * this.b).to!int
+            sink((255.999 * b).to!int
                     .to!string);
             break;
         default:
             throw new FormatException("Unknown format specifier: %" ~ fmt.spec);
         }
+    }
+
+    static Color black() {
+        return new Color(0.);
+    }
+
+    static Color white() {
+        return new Color(1.0);
     }
 }

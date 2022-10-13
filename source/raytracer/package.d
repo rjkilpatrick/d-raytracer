@@ -1,5 +1,6 @@
 module raytracer;
 
+public import raytracer.camera;
 public import raytracer.color;
 public import raytracer.hittable;
 public import raytracer.hittable_list;

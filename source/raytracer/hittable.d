@@ -1,7 +1,6 @@
 module raytracer.hittable;
 
-import raytracer.ray;
-import raytracer.vec3;
+import raytracer;
 
 ///
 struct HitRecord {
