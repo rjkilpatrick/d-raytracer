@@ -7,7 +7,7 @@ class Sphere : Hittable {
     this() {
     }
 
-    this(Point3 centre, double radius, Material material) {
+    this(Point3 centre, const double radius, Material material) {
         _center = centre;
         _radius = radius;
         _material = material;

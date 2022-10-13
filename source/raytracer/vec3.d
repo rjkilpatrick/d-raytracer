@@ -175,7 +175,7 @@ pragma(inline):
     }
 
     /// Duplicate copy of class instance with same properties
-    auto dup() const {
+    auto dup()() const {
         return new Vec3(this.x, this.y, this.z);
     }
 

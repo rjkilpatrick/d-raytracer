@@ -37,8 +37,8 @@ void main() {
     // Materials
     auto materialGround = new Lambertian(new Color(0.8, 0.8, 0.0));
     auto materialCentre = new Lambertian(new Color(0.7, 0.3, 0.3));
-    auto materialLeft = new Metal(new Color(0.8, 0.8, 0.8));
-    auto materialRight = new Metal(new Color(0.8, 0.6, 0.2));
+    auto materialLeft = new Metal(new Color(0.8), 0.3);
+    auto materialRight = new Metal(new Color(0.8, 0.6, 0.2), 1.0);
 
     // World
     HittableList world = new HittableList();
