@@ -1,21 +1,21 @@
-module raytracer.color;
+module raytracer.colour;
 
 import raytracer.vec3;
 
-/// 3-vector of RGB color
-class Color : Vec3 {
+/// 3-vector of RGB colour
+class Colour : Vec3 {
 
-    /// Returns black Color
+    /// Returns black Colour
     this() pure {
         super();
     }
 
-    /// Returns Gray-scale Color
+    /// Returns Gray-scale Colour
     this(double gray) pure {
         super(gray);
     }
 
-    /// Returns Color filled with r, g, b
+    /// Returns Colour filled with r, g, b
     this(double r, double g, double b) pure {
         super(r, g, b);
     }
@@ -47,11 +47,11 @@ class Color : Vec3 {
         }
     }
 
-    static Color black() {
-        return new Color(0.);
+    static Colour black() {
+        return new Colour(0.);
     }
 
-    static Color white() {
-        return new Color(1.0);
+    static Colour white() {
+        return new Colour(1.0);
     }
 }

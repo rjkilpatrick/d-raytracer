@@ -4,7 +4,7 @@ import raytracer.vec3;
 
 /++
     The one thing that all ray tracers have is a ray class and a computation of what
-    color is seen along a ray. Let’s think of a ray as a function P(t)=A+tb. Here P
+    colour is seen along a ray. Let’s think of a ray as a function P(t)=A+tb. Here P
     is a 3D position along a line in 3D. A is the ray origin and b is the ray
     direction. The ray parameter t is a real number (double in the code). Plug in a
     different t and P(t) moves the point along the ray. Add in negative t values and

@@ -3,19 +3,20 @@ module raytracer.material;
 import raytracer;
 
 interface Material {
-    bool scatter(const Ray rayIn, const HitRecord hitRecord, ref Color attenuation, ref Ray scattered);
+    bool scatter(const Ray rayIn, const HitRecord hitRecord, ref Colour attenuation,
+            ref Ray scattered);
 
     Material dup() const;
 }
 
 /// Simple lambertian material
 class Lambertian : Material {
-    this(Color albedo) {
+    this(Colour albedo) {
         _albedo = albedo;
     }
 
     override bool scatter(const Ray rayIn, const HitRecord hitRecord,
-            ref Color attenuation, ref Ray scattered) {
+            ref Colour attenuation, ref Ray scattered) {
         Vec3 scatterDirection = hitRecord.normal.dup + random_unit_vector();
 
         // Catch degenerate scatter direction
@@ -29,22 +30,22 @@ class Lambertian : Material {
 
     /// Duplicate copy of class instance with same properties
     Lambertian dup() const {
-        return new Lambertian(cast(Color) this._albedo);
+        return new Lambertian(cast(Colour) this._albedo);
     }
 
 private:
-    Color _albedo;
+    Colour _albedo;
 }
 
 /// Simple metal material
 class Metal : Material {
-    this(Color albedo, double fuzziness = 0.0) {
+    this(Colour albedo, double fuzziness = 0.0) {
         _albedo = albedo;
         _fuzziness = fuzziness; // < 1 ? fuzziness : 1.0;
     }
 
     override bool scatter(const Ray rayIn, const HitRecord hitRecord,
-            ref Color attenuation, ref Ray scattered) {
+            ref Colour attenuation, ref Ray scattered) {
         Vec3 reflected = rayIn.direction.unitVector.reflect(hitRecord.normal.dup);
         scattered = new Ray(hitRecord.point, reflected + _fuzziness * random_in_unit_sphere());
         attenuation = _albedo;
@@ -53,11 +54,11 @@ class Metal : Material {
 
     /// Duplicate copy of class instance with same properties
     Metal dup() const {
-        return new Metal(cast(Color) this._albedo, this._fuzziness);
+        return new Metal(cast(Colour) this._albedo, this._fuzziness);
     }
 
 private:
-    Color _albedo;
+    Colour _albedo;
     double _fuzziness;
 }
 
@@ -67,11 +68,11 @@ class Dielectric : Material {
     }
 
     override bool scatter(const Ray rayIn, const HitRecord hitRecord,
-            ref Color attenuation, ref Ray scattered) {
+            ref Colour attenuation, ref Ray scattered) {
         import std.math : fmin, sqrt;
         import std.random : uniform01;
 
-        attenuation = Color.white;
+        attenuation = Colour.white;
         double refractionRatio = hitRecord.isFrontFace ? (1.0 / _refractiveIndex) : _refractiveIndex;
 
         Vec3 unitDirection = rayIn.direction.unitVector;
