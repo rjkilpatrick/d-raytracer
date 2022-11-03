@@ -8,7 +8,8 @@ import std.variant : Variant;
 ///
 class HittableList : Hittable {
     ///
-    this() {}
+    this() {
+    }
 
     ///
     void clear() {

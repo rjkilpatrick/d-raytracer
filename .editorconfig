@@ -1,0 +1,17 @@
+root = true
+
+# Unix-style newlines with a newline ending every file
+[*]
+end_of_line = lf
+insert_final_newline = true
+
+# D code files
+[*.d]
+dfmt_align_switch_statements = true
+dfmt_brace_style = otbs
+dfmt_soft_max_line_length = 80
+end_of_line = lf
+indent_size = 4
+indent_style = space
+insert_final_newline = true
+tab_width = 4

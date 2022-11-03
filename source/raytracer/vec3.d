@@ -80,27 +80,29 @@ pragma(inline):
     }
 
     /// Left binary scalar ops. [+, -, *, /]
-    auto opBinary(string op, this T)(double rhs) const
-    if ((op == "+") || (op == "-") || (op == "*") || (op == "/")) {
+    auto opBinary(string op, this T)(double rhs) const 
+            if ((op == "+") || (op == "-") || (op == "*") || (op == "/")) {
         return mixin("new T(this.x " ~ op ~ " rhs, this.y " ~ op ~ " rhs, this.z " ~ op ~ " rhs)");
     }
 
     /// Left binary scalar ops. [+, -, *, /]
-    auto opBinary(string op, this T)(T rhs) const
-    if ((op == "+") || (op == "-") || (op == "*") || (op == "/")) {
-        return mixin("new T(this.x " ~ op ~ " rhs.x, this.y " ~ op ~ " rhs.y, this.z " ~ op ~ " rhs.z)");
+    auto opBinary(string op, this T)(T rhs) const 
+            if ((op == "+") || (op == "-") || (op == "*") || (op == "/")) {
+        return mixin("new T(this.x " ~ op ~ " rhs.x, this.y " ~ op
+                ~ " rhs.y, this.z " ~ op ~ " rhs.z)");
     }
 
     /// Right binary scalar ops. [+, -, *, /]
-    auto opBinaryRight(string op, this T)(double lhs) const
-    if ((op == "+") || (op == "-") || (op == "*") || (op == "/")) {
+    auto opBinaryRight(string op, this T)(double lhs) const 
+            if ((op == "+") || (op == "-") || (op == "*") || (op == "/")) {
         return mixin("new T(lhs " ~ op ~ " this.x, lhs " ~ op ~ " this.y, lhs " ~ op ~ " this.z)");
     }
 
     /// Right binary scalar ops. [+, -, *, /]
-    auto opBinaryRight(string op, this T)(T lhs) const
-    if ((op == "+") || (op == "-") || (op == "*") || (op == "/")) {
-        return mixin("new T(lhs.x " ~ op ~ " this.x, lhs.y " ~ op ~ " this.y, lhs.z " ~ op ~ " this.z)");
+    auto opBinaryRight(string op, this T)(T lhs) const 
+            if ((op == "+") || (op == "-") || (op == "*") || (op == "/")) {
+        return mixin("new T(lhs.x " ~ op ~ " this.x, lhs.y " ~ op
+                ~ " this.y, lhs.z " ~ op ~ " this.z)");
     }
 
     Vec3 opOpAssign(string op)(Vec3 rhs)
@@ -368,6 +370,21 @@ Vec3 random_in_hemisphere(const Vec3 normal) {
 /// Reflects a vector about a normal
 Vec3 reflect(Vec3 v, Vec3 normal) {
     return v - 2 * v.dot(normal) * normal;
+}
+
+/++
+    Params:
+        uv = unit vector
+        normal = unit vector
+        refractive_index_ratio = relative ratio of the incident to the transmitted refractive indices
++/
+Vec3 refract(Vec3 uv, Vec3 normal, double refractive_index_ratio) {
+    import std.math : fabs, fmin, sqrt;
+
+    auto cos_theta = (-uv).dot(normal).fmin(1.0);
+    Vec3 r_out_perp = refractive_index_ratio * (uv + cos_theta * normal);
+    Vec3 r_out_parallel = -sqrt(fabs(1.0 - r_out_perp.lengthSquared)) * normal;
+    return r_out_perp + r_out_parallel;
 }
 
 /++

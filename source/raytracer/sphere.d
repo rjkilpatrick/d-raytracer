@@ -16,6 +16,7 @@ class Sphere : Hittable {
     ///
     override bool hit(const Ray ray, double tMin, double tMax, ref HitRecord hitRecord) const {
         import std.conv : to;
+
         Vec3 oc = (ray.origin.dup - _center).dup.to!Vec3;
 
         // Uses discriminant from quadratic equation solved

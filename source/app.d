@@ -36,16 +36,19 @@ void main() {
 
     // Materials
     auto materialGround = new Lambertian(new Color(0.8, 0.8, 0.0));
-    auto materialCentre = new Lambertian(new Color(0.7, 0.3, 0.3));
-    auto materialLeft = new Metal(new Color(0.8), 0.3);
+    auto materialCentre = new Lambertian(new Color(0.1, 0.2, 0.5));
+    auto materialLeft = new Dielectric(1.5);
     auto materialRight = new Metal(new Color(0.8, 0.6, 0.2), 1.0);
 
     // World
     HittableList world = new HittableList();
     world ~= new Sphere(new Point3(0.0, -100.5, -1.0), 100.0, materialGround);
     world ~= new Sphere(new Point3(0.0, 0.0, -1.0), 0.5, materialCentre);
-    world ~= new Sphere(new Point3(-1.0, 0.0, -1.0), 0.5, materialLeft);
     world ~= new Sphere(new Point3(1.0, 0.0, -1.0), 0.5, materialRight);
+
+    // Sphere of negative radius inside is a trick for a hollow glass 'sphere'
+    world ~= new Sphere(new Point3(-1.0, 0.0, -1.0), 0.5, materialLeft);
+    world ~= new Sphere(new Point3(-1.0, 0.0, -1.0), -0.4, materialLeft);
 
     // Camera
     Camera camera = new Camera();

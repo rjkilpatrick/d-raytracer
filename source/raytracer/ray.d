@@ -31,6 +31,7 @@ class Ray {
     /// Gets ray at parameter t
     Point3 at(double t) const {
         import std.conv : to;
+
         return _origin.dup + (t * _direction).dup.to!Point3;
     }
 
